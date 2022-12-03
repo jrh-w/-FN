@@ -1,0 +1,34 @@
+CREATE TABLE jobs(
+   job_id SERIAL,
+   printer_id INTEGER,
+   username TEXT NOT NULL,
+   paths TEXT,
+   progress TEXT,
+   PRIMARY KEY(job_id),
+   CONSTRAINT fk_printer
+      FOREIGN KEY(printer_id)
+	  REFERENCES printers(printer_id)
+	  ON DELETE CASCADE
+);
+
+
+ALTER TABLE printers
+ADD CONSTRAINT unique_name UNIQUE(name);
+
+ALTER TABLE jobs ALTER COLUMN progress SET DEFAULT 0.0;
+ALTER TABLE jobs ALTER COLUMN status SET DEFAULT 'preparing';
+
+# For sequence list:
+SELECT sequence_schema, sequence_name
+FROM information_schema.sequences
+ORDER BY sequence_name
+
+alter sequence printers_printer_id_seq restart with 2 # 2 to następny id
+alter sequence jobs_job_id_seq restart with 2
+
+# For restarting the testing data:
+UPDATE jobs SET (progress, status) = (0.0, 'preparing') WHERE status!='complete';
+
+M 100 350 l 150 -300;M 250 50 l 150 300;M 175 200 l 150 0;M 100 350 q 150 -300 300 0
+
+{'files': [{'date': 1665078526, 'display': 'CE3_Heart.gcode', 'gcodeAnalysis': {'dimensions': {'depth': 180.0, 'height': 0.4, 'width': 138.342}, 'estimatedPrintTime': 49.78073535040541, 'filament': {'tool0': {'length': 47.18475000000005, 'volume': 0.0}}, 'printingArea': {'maxX': 138.442, 'maxY': 200.0, 'maxZ': 0.4, 'minX': 0.1, 'minY': 20.0, 'minZ': 0.0}}, 'hash': '768ceb3d32611b7449614237725f07398c4eae22', 'name': 'CE3_Heart.gcode', 'origin': 'local', 'path': 'CE3_Heart.gcode', 'prints': {'failure': 0, 'last': {'date': 1665078829.066853, 'printTime': 302.234238293, 'success': True}, 'success': 1}, 'refs': {'download': 'http://192.168.0.89/downloads/files/local/CE3_Heart.gcode', 'resource': 'http://192.168.0.89/api/files/local/CE3_Heart.gcode'}, 'size': 25361, 'statistics': {'averagePrintTime': {'_default': 302.234238293}, 'lastPrintTime': {'_default': 302.234238293}}, 'type': 'machinecode', 'typePath': ['machinecode', 'gcode']}], 'free': 27243417600, 'total': 30493962240}
