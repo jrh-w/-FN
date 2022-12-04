@@ -1,6 +1,6 @@
 import psycopg2
 
-ip_address = '192.168.1.28'
+ip_address = '172.20.10.8'
 
 api_token = 'B9BF2A023A064DF3AC872A8CF3062ED8'
 

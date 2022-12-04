@@ -53,8 +53,12 @@ while exit == False:
             addJob = True
         else:
             print('Current job:', currentJob['file']['name'], progress['completion'])
-            printer_local.append((currentJob['file']['name'], progress['completion'],
+            if len(printer_local) > 0:
+                printer_local.remove(printer_local[0])
+            printer_local.insert(0, (currentJob['file']['name'], progress['completion'],
                 'complete' if progress['completion'] == 100.0 else 'in_progress'))
+            postgresConn(updateJobs, { 'localData': printer_local })
+            #print(printer_local)
 
         # Getting current saved files
         get_files = requests.get('http://{}/api/files'.format(ip_address), headers=headers)
@@ -75,6 +79,7 @@ while exit == False:
         # Add new jobs to the list
         for job in printer_jobs:
             paths = job[3].split(';')
+            print('\nTest: ', paths, '\n')
             result = convertToGcode(paths)
             print(result)
 
