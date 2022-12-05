@@ -2,14 +2,14 @@ import math
 import re
 
 PRINT_SPEED = 30000;
-EXTRUDER_SPEED = 1.1;
-Z_POS = 20.0;
+EXTRUDER_SPEED = 0.2;
+Z_POS = 35.0;
 SKIA_XY_RANGE = 330;
 PRINTER_XY_RANGE = 220;
 
 GCODE_CONST = {
-    "start": "M104 S45\n M109 S45\n M302 P1\n M203 E999\n G28\n G92 E0\n G1 Z15.0 F30000\n",
-    "end": "\n G91\n G1 E100\n G90\n G1 X0 Y200 Z50 \n"
+    "start": "M104 S32\n M109 S32\n M302 P1\n M203 E999\n G28\n G92 E0\n G1 Z35.0 F30000\n",
+    "end": "\n G91\n G1 Y100 E65\n G90\n G1 X0 Y200 Z50 \n"
 }
 
 def convertToGcode(paths, extruderSpeed=EXTRUDER_SPEED, zPos=Z_POS,
@@ -35,10 +35,11 @@ def convertToGcode(paths, extruderSpeed=EXTRUDER_SPEED, zPos=Z_POS,
         # For each coord pass a line directing the printer to the next destination
         for s in final:
             data = s.split(' ')
-            if path == paths[0] and s == filtered[0]:
-                result += f'\n G1 X{(float(data[0])*scale*0.5)+75} Y{((xyRange - float(data[1])) * scale * 0.5) + 75} Z{zPos} E-150 \n G92 E0';
-            elif s == filtered[0]:
-                result += f'\n G0 X{(float(data[0])*scale*0.5)+75} Y{((xyRange - float(data[1])) * scale * 0.5) + 75}';
+            if path == paths[0] and s == final[0]:
+                result += f'\n G1 X{(float(data[0])*scale*0.5)+75} Y{((xyRange - float(data[1])) * scale * 0.5) + 75} Z{zPos} E-110 \n G92 E20';
+            elif s == final[0]:
+                result += f'\n G1 X{(float(data[0])*scale*0.5)+75} Y{((xyRange - float(data[1])) * scale * 0.5) + 75} E{extruderPosition + 65}';
+                #extruderPosition += 15;
             else:
                 index = filtered.index(s)
                 length = 1
